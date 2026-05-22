@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php
+// Minimal helper artisan: if Laravel framework is present, delegate to it.
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+	require __DIR__ . '/vendor/autoload.php';
+}
+
+$argv = $_SERVER['argv'] ?? [];
+
+// If Laravel is installed (Illuminate exists), try to boot the real artisan
+if (class_exists('\\Illuminate\\Foundation\\Console\\Kernel')) {
+	$app = require __DIR__ . '/bootstrap/app.php';
+	$kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
+	$status = $kernel->handle(
+		new \Symfony\Component\Console\Input\ArgvInput,
+		new \Symfony\Component\Console\Output\ConsoleOutput
+	);
+	exit($status);
+}
+
+// If user ran `php artisan serve`, start PHP built-in server for this minimal template
+if (in_array('serve', $argv)) {
+	$host = '127.0.0.1';
+	$port = 8000;
+	fwrite(STDOUT, "Starting built-in PHP server on http://{$host}:{$port} (public)\n");
+	// Use exec so the server runs in foreground as expected
+	$cmd = PHP_BINARY . " -S {$host}:{$port} -t " . escapeshellarg(__DIR__ . '/public');
+	passthru($cmd);
+	exit(0);
+}
+
+// Fallback message for minimal template
+fwrite(STDOUT, "Attendance Web minimal template.\n");
+fwrite(STDOUT, "To serve the public folder run: php -S 127.0.0.1:8000 -t public\n");

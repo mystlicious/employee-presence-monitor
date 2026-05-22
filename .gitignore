@@ -1,0 +1,12 @@
+/.env
+/vendor/
+/node_modules/
+/public/uploads/employees/*
+!/public/uploads/employees/.gitkeep
+/storage/app/absence_proofs/*
+!/storage/app/absence_proofs/.gitkeep
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
