@@ -43,6 +43,27 @@ if (file_exists($envFile)) {
 $timezone = getenv('APP_TIMEZONE') ?: 'Asia/Singapore';
 date_default_timezone_set($timezone);
 
+/**
+ * PDO options for MySQL (Aiven / Render: set MYSQL_ATTR_SSL_CA=/etc/secrets/aiven-ca.pem).
+ */
+function pdo_mysql_driver_options(): array
+{
+	$options = [
+		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+	];
+
+	$sslCa = getenv('MYSQL_ATTR_SSL_CA');
+	if ($sslCa !== false && $sslCa !== '') {
+		if (! is_readable($sslCa)) {
+			throw new RuntimeException("MYSQL_ATTR_SSL_CA is set but not readable: {$sslCa}");
+		}
+		$options[PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
+	}
+
+	return $options;
+}
+
 $driver = getenv('DB_CONNECTION') ?: 'mysql';
 
 try {
@@ -57,23 +78,15 @@ try {
 	$pass = getenv('DB_PASSWORD') ?: '';
 	$charset = getenv('DB_CHARSET') ?: 'utf8mb4';
 	$dsn = "mysql:host={$host};port={$port};dbname={$db};charset={$charset}";
+	$pdoOptions = pdo_mysql_driver_options();
 	try {
-		$pdo = new PDO($dsn, $user, $pass, [
-			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-		]);
+		$pdo = new PDO($dsn, $user, $pass, $pdoOptions);
 	} catch (PDOException $e) {
 		// If database is missing, create it automatically and retry once.
 		if (str_contains($e->getMessage(), 'Unknown database')) {
-			$serverPdo = new PDO("mysql:host={$host};port={$port};charset={$charset}", $user, $pass, [
-				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-			]);
+			$serverPdo = new PDO("mysql:host={$host};port={$port};charset={$charset}", $user, $pass, $pdoOptions);
 			$serverPdo->exec("CREATE DATABASE IF NOT EXISTS `{$db}` CHARACTER SET {$charset} COLLATE utf8mb4_unicode_ci");
-			$pdo = new PDO($dsn, $user, $pass, [
-				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-			]);
+			$pdo = new PDO($dsn, $user, $pass, $pdoOptions);
 		} else {
 			throw $e;
 		}
