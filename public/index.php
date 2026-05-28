@@ -1,4 +1,13 @@
 <?php
+
+$healthPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+if ($healthPath === '/healthz') {
+	http_response_code(200);
+	header('Content-Type: text/plain; charset=UTF-8');
+	echo 'ok';
+	exit;
+}
+
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../bootstrap/helpers.php';
 $app = require __DIR__ . '/../bootstrap/app.php';
