@@ -74,52 +74,66 @@ include $viewsRoot . '/partials/admin-chrome-open.php';
   <div class="tw-overflow-hidden tw-rounded-2xl tw-border tw-border-white/50 tw-bg-white/68 tw-backdrop-blur-xl tw-shadow-[0_20px_50px_rgba(8,112,184,0.1)]">
     <h2 class="tw-m-0 tw-border-b tw-border-slate-200/80 tw-px-5 tw-py-4 tw-text-lg tw-font-extrabold tw-tracking-tight tw-text-slate-900 sm:tw-px-6"><?php echo htmlspecialchars(__('absence_log')); ?></h2>
     <div class="pm-table-wrap pm-table-wrap--flush pm-table-wrap--absence-log">
-      <table class="pm-table pm-table--absence-log">
-        <colgroup>
-          <col class="pm-col-date">
-          <col class="pm-col-status">
-          <col class="pm-col-note">
-          <col class="pm-col-proofs">
-        </colgroup>
-        <thead>
-          <tr>
-            <th><?php echo htmlspecialchars(__('date')); ?></th>
-            <th><?php echo htmlspecialchars(__('status')); ?></th>
-            <th><?php echo htmlspecialchars(__('note')); ?></th>
-            <th class="pm-col-proofs-head"><?php echo htmlspecialchars(__('proofs')); ?></th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-            $rows = $show['logs'] ?? [];
-          if (count($rows) === 0) {
-              echo '<tr><td colspan="4" class="tw-py-8 tw-text-center tw-text-sm tw-text-slate-600">' . htmlspecialchars(__('no_log_entries'), ENT_QUOTES, 'UTF-8') . '</td></tr>';
-          } else {
-              foreach ($rows as $L) {
-                  $hasProof = !empty($L['has_proof']);
-                  $viewU = (string) ($L['proof_view_url'] ?? '');
-                  $dlU = (string) ($L['proof_download_url'] ?? '');
-                  $ext = (string) ($L['proof_ext'] ?? '');
-                  echo '<tr>';
-                  echo '<td class="tw-font-semibold tw-text-slate-800">' . htmlspecialchars($L['date_label'] ?? '—', ENT_QUOTES, 'UTF-8') . '</td>';
-                  echo '<td>' . htmlspecialchars($L['status'] ?? '—', ENT_QUOTES, 'UTF-8') . '</td>';
-                  echo '<td class="pm-col-note-cell tw-text-slate-600">' . htmlspecialchars($L['note'] ?? '—', ENT_QUOTES, 'UTF-8') . '</td>';
-                  echo '<td class="pm-col-proofs-cell">';
-                  if ($hasProof && $viewU !== '') {
-                      echo '<button type="button" class="pm-proof-btn tw-inline-flex tw-items-center tw-justify-center tw-gap-1.5 tw-whitespace-nowrap tw-rounded-xl tw-border tw-border-sky-200/80 tw-bg-sky-50 tw-px-2.5 tw-py-1.5 tw-text-xs tw-font-bold tw-text-sky-700 tw-shadow-sm tw-transition hover:tw-border-sky-300 hover:tw-bg-sky-100 hover:tw-text-sky-900 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-sky-300 sm:tw-px-3" data-proof-url="' . htmlspecialchars($viewU, ENT_QUOTES, 'UTF-8') . '" data-proof-dl="' . htmlspecialchars($dlU, ENT_QUOTES, 'UTF-8') . '" data-proof-ext="' . htmlspecialchars($ext, ENT_QUOTES, 'UTF-8') . '" title="' . htmlspecialchars(__('view_document'), ENT_QUOTES, 'UTF-8') . '" aria-label="' . htmlspecialchars(__('view_document'), ENT_QUOTES, 'UTF-8') . '">';
-                      echo '<svg class="tw-shrink-0" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>';
-                      echo '<span class="tw-whitespace-nowrap">' . htmlspecialchars(__('view_document'), ENT_QUOTES, 'UTF-8') . '</span>';
-                      echo '</button>';
-                  } else {
-                      echo '<span class="tw-text-sm tw-font-medium tw-text-slate-300">—</span>';
+      <div class="pm-table-x-sync scrollbar-thin">
+        <div class="pm-table-head" aria-hidden="true">
+          <table class="pm-table pm-table--absence-log">
+            <colgroup>
+              <col class="pm-col-date">
+              <col class="pm-col-status">
+              <col class="pm-col-note">
+              <col class="pm-col-proofs">
+            </colgroup>
+            <thead>
+              <tr>
+                <th><?php echo htmlspecialchars(__('date')); ?></th>
+                <th><?php echo htmlspecialchars(__('status')); ?></th>
+                <th><?php echo htmlspecialchars(__('note')); ?></th>
+                <th class="pm-col-proofs-head"><?php echo htmlspecialchars(__('proofs')); ?></th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div class="pm-table-body" role="region" aria-label="<?php echo htmlspecialchars(__('absence_log')); ?>">
+          <table class="pm-table pm-table--absence-log">
+            <colgroup>
+              <col class="pm-col-date">
+              <col class="pm-col-status">
+              <col class="pm-col-note">
+              <col class="pm-col-proofs">
+            </colgroup>
+            <tbody>
+              <?php
+                $rows = $show['logs'] ?? [];
+              if (count($rows) === 0) {
+                  echo '<tr><td colspan="4" class="tw-py-8 tw-text-center tw-text-sm tw-text-slate-600">' . htmlspecialchars(__('no_log_entries'), ENT_QUOTES, 'UTF-8') . '</td></tr>';
+              } else {
+                  foreach ($rows as $L) {
+                      $hasProof = !empty($L['has_proof']);
+                      $viewU = (string) ($L['proof_view_url'] ?? '');
+                      $dlU = (string) ($L['proof_download_url'] ?? '');
+                      $ext = (string) ($L['proof_ext'] ?? '');
+                      echo '<tr>';
+                      echo '<td class="tw-font-semibold tw-text-slate-800">' . htmlspecialchars($L['date_label'] ?? '—', ENT_QUOTES, 'UTF-8') . '</td>';
+                      echo '<td>' . htmlspecialchars($L['status'] ?? '—', ENT_QUOTES, 'UTF-8') . '</td>';
+                      echo '<td class="pm-col-note-cell tw-text-slate-600">' . htmlspecialchars($L['note'] ?? '—', ENT_QUOTES, 'UTF-8') . '</td>';
+                      echo '<td class="pm-col-proofs-cell">';
+                      if ($hasProof && $viewU !== '') {
+                          echo '<button type="button" class="pm-proof-btn tw-inline-flex tw-items-center tw-justify-center tw-gap-1.5 tw-whitespace-nowrap tw-rounded-xl tw-border tw-border-sky-200/80 tw-bg-sky-50 tw-px-2.5 tw-py-1.5 tw-text-xs tw-font-bold tw-text-sky-700 tw-shadow-sm tw-transition hover:tw-border-sky-300 hover:tw-bg-sky-100 hover:tw-text-sky-900 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-sky-300 sm:tw-px-3" data-proof-url="' . htmlspecialchars($viewU, ENT_QUOTES, 'UTF-8') . '" data-proof-dl="' . htmlspecialchars($dlU, ENT_QUOTES, 'UTF-8') . '" data-proof-ext="' . htmlspecialchars($ext, ENT_QUOTES, 'UTF-8') . '" title="' . htmlspecialchars(__('view_document'), ENT_QUOTES, 'UTF-8') . '" aria-label="' . htmlspecialchars(__('view_document'), ENT_QUOTES, 'UTF-8') . '">';
+                          echo '<svg class="tw-shrink-0" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>';
+                          echo '<span class="tw-whitespace-nowrap">' . htmlspecialchars(__('view_document'), ENT_QUOTES, 'UTF-8') . '</span>';
+                          echo '</button>';
+                      } else {
+                          echo '<span class="tw-text-sm tw-font-medium tw-text-slate-300">—</span>';
+                      }
+                      echo '</td>';
+                      echo '</tr>';
                   }
-                  echo '</td>';
-                  echo '</tr>';
               }
-          }
-          ?>
-        </tbody>
-      </table>
+              ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>

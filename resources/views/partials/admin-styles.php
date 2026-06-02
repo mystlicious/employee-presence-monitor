@@ -437,6 +437,24 @@
       min-width:0;
       width:100%;
     }
+    .pm-table-wrap--absence-log .pm-table-x-sync{
+      width:100%;
+    }
+    .pm-table-wrap--absence-log .pm-table-head{
+      overflow:hidden;
+      border-bottom:1px solid rgba(208,224,251,.9);
+      background:rgba(248,250,252,.98);
+      padding-right:var(--pm-sbw);
+    }
+    .pm-table-wrap--absence-log .pm-table-head .pm-table thead th{
+      background:rgba(248,250,252,.98);
+    }
+    .pm-table-wrap--absence-log .pm-table-body{
+      max-height:min(62vh,640px);
+      overflow-y:auto;
+      overflow-x:hidden;
+      scrollbar-gutter:stable;
+    }
     /* Spread columns across full table width; proofs sized for one-line button only */
     .pm-table-wrap--absence-log col.pm-col-date{ width:16%; }
     .pm-table-wrap--absence-log col.pm-col-status{ width:17%; }
@@ -458,6 +476,24 @@
     .pm-table-wrap--absence-log .pm-proof-btn{
       margin-left:auto;
       margin-right:auto;
+    }
+    @media (max-width:1023px){
+      .pm-table-wrap--absence-log .pm-table-x-sync{
+        overflow-x:auto;
+        -webkit-overflow-scrolling:touch;
+      }
+      .pm-table-wrap--absence-log .pm-table--absence-log{
+        min-width:46rem;
+        width:max-content;
+        table-layout:auto;
+      }
+      .pm-table-wrap--absence-log .pm-table-head{
+        padding-right:0;
+      }
+      .pm-table-wrap--absence-log .pm-table-body{
+        overflow-x:visible;
+        scrollbar-gutter:auto;
+      }
     }
     /* Employee directory */
     .pm-table-wrap--employee-directory{
