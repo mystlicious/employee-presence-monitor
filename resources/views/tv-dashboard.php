@@ -629,19 +629,50 @@
       }
       .sig-card {
         grid-template-columns: 5.5rem 1fr;
+        align-items: stretch;
         min-height: auto;
         height: auto;
         padding: 0.65rem;
       }
       .sig-media {
-        height: 5.5rem;
-        min-height: 5rem;
-        max-height: 6.5rem;
+        align-self: stretch;
+        height: auto;
+        min-height: 5.75rem;
+        max-height: none;
+      }
+      .sig-avatar,
+      .sig-avatar-fallback {
+        min-height: 100%;
+        height: 100%;
       }
       .sig-tools {
         flex-direction: column;
         align-items: stretch;
         gap: 0.65rem;
+      }
+      .sig-tools__nav {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+      }
+      .sig-tools__nav form {
+        flex: 1 1 10.5rem;
+        min-width: 0;
+        max-width: 100%;
+      }
+      .sig-date-wrap {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 10.5rem;
+      }
+      .sig-date-input {
+        width: 100%;
+        min-width: 0;
+        font-size: 0.875rem;
+        padding-left: 0.5rem;
+        padding-right: 2.5rem;
       }
       .sig-filter select {
         width: 100%;
@@ -685,7 +716,7 @@
             <input type="hidden" name="status" value="<?php echo htmlspecialchars($statusFilter); ?>">
           <?php endif; ?>
           <span class="sig-date-wrap">
-            <input class="sig-date-input" id="displayDateInput" type="date" name="date" value="<?php echo htmlspecialchars($selectedDate); ?>" onchange="this.form.submit()">
+            <input class="sig-date-input" id="displayDateInput" type="date" name="date" value="<?php echo htmlspecialchars($selectedDate); ?>" required>
             <svg class="sig-date-pick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
           </span>
         </form>
@@ -956,6 +987,16 @@
         } else {
           displayDateInput.focus();
         }
+      });
+      displayDateInput.addEventListener('change', () => {
+        if (!displayDateInput.value) {
+          const params = new URLSearchParams(window.location.search);
+          params.delete('date');
+          const q = params.toString();
+          window.location.assign('/display-mode' + (q ? '?' + q : ''));
+          return;
+        }
+        displayDateInput.form?.submit();
       });
     }
 

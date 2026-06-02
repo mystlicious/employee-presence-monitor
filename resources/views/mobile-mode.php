@@ -503,6 +503,9 @@
     });
 
     document.getElementById('presenceForm')?.addEventListener('submit', (e) => {
+      const form = e.target;
+      const submitBtn = form?.querySelector('button[type="submit"]');
+
       if (!statusField.value.trim()) {
         e.preventDefault();
         if (statusClientError) {
@@ -517,6 +520,16 @@
         e.preventDefault();
         employeeSearch.focus();
         setEmployeeState(i18n.employeeMustSelect, true);
+        return;
+      }
+      if (form?.dataset.submitting === '1') {
+        e.preventDefault();
+        return;
+      }
+      form.dataset.submitting = '1';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-busy', 'true');
       }
     });
   </script>

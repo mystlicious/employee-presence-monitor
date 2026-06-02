@@ -37,7 +37,7 @@ class PresenceLog
     public static function uniqueLocationsForDate(string $date)
     {
         $pdo = self::pdo();
-        $stmt = $pdo->prepare('SELECT COUNT(DISTINCT location) as c FROM presence_logs WHERE log_date = :d AND location IS NOT NULL AND location <> ""');
+        $stmt = $pdo->prepare("SELECT COUNT(DISTINCT location) as c FROM presence_logs WHERE log_date = :d AND location IS NOT NULL AND location <> ''");
         $stmt->execute(['d' => $date]);
         $r = $stmt->fetch();
         return (int)($r['c'] ?? 0);
@@ -65,6 +65,39 @@ class PresenceLog
     public static function distinctEmployees()
     {
         return Employee::names();
+    }
+
+    /**
+     * Block double-submit spam (same employee, day, status, location within a short window).
+     */
+    public static function hasRecentDuplicate(
+        string $employeeName,
+        string $logDate,
+        string $status,
+        string $location,
+        int $withinSeconds = 90
+    ): bool {
+        if ($employeeName === '' || $logDate === '' || $status === '') {
+            return false;
+        }
+        $withinSeconds = max(1, min(300, $withinSeconds));
+        $since = date('Y-m-d H:i:s', time() - $withinSeconds);
+        $pdo = self::pdo();
+        $stmt = $pdo->prepare(
+            'SELECT id FROM presence_logs
+             WHERE employee_name = :n AND log_date = :d AND status = :s AND location = :loc
+               AND created_at >= :since
+             LIMIT 1'
+        );
+        $stmt->execute([
+            'n' => $employeeName,
+            'd' => $logDate,
+            's' => $status,
+            'loc' => $location,
+            'since' => $since,
+        ]);
+
+        return (bool) $stmt->fetch();
     }
 
     public static function createLog(string $employeeName, array $data)
@@ -229,9 +262,9 @@ SQL;
         }
         $pdo = self::pdo();
         $stmt = $pdo->prepare(
-            'SELECT COUNT(DISTINCT log_date) AS c FROM presence_logs
-             WHERE employee_name = :n AND log_date IS NOT NULL AND log_date <> ""
-               AND log_date BETWEEN :s AND :e'
+            "SELECT COUNT(DISTINCT log_date) AS c FROM presence_logs
+             WHERE employee_name = :n AND log_date IS NOT NULL AND log_date <> ''
+               AND log_date BETWEEN :s AND :e"
         );
         $stmt->execute(['n' => $name, 's' => $startDate, 'e' => $endDate]);
         $row = $stmt->fetch();

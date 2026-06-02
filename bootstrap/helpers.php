@@ -174,3 +174,17 @@ function flash_pull(string $key): ?string
 
     return $msg;
 }
+
+/**
+ * Normalize ?date= (empty or invalid → today).
+ */
+function normalize_log_date(?string $date): string
+{
+    $date = trim((string) $date);
+    if ($date === '') {
+        return date('Y-m-d');
+    }
+    $dt = \DateTimeImmutable::createFromFormat('Y-m-d', $date);
+
+    return ($dt !== false && $dt->format('Y-m-d') === $date) ? $date : date('Y-m-d');
+}

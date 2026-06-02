@@ -91,6 +91,10 @@ return function() {
                 return '';
             }
             if ($employee && $status && $location && $logDate && $hasRequiredTimeWindow) {
+                if (PresenceLog::hasRecentDuplicate($employee, $logDate, $status, $location)) {
+                    header('Location: /input-form/thanks');
+                    return '';
+                }
                 $attachmentPath = null;
                 if ($proofAllowed) {
                     try {
@@ -232,8 +236,13 @@ return function() {
     }
 
     if ($path === '/display-mode' || $path === '/tv-mode') {
-        $selectedDate = $_GET['date'] ?? date('Y-m-d');
         $statusFilter = trim($_GET['status'] ?? '');
+        if (isset($_GET['date']) && trim((string) $_GET['date']) === '') {
+            $qs = $statusFilter !== '' ? ('?status=' . rawurlencode($statusFilter)) : '';
+            header('Location: /display-mode' . $qs);
+            return '';
+        }
+        $selectedDate = normalize_log_date($_GET['date'] ?? null);
         $total = PresenceLog::countEmployees();
         // Everyone is treated as in-office by default; only employees with at least one log on this day count as not in office (no check-in/out yet).
         $notIn = PresenceLog::uniqueEmployeesForDate($selectedDate);
@@ -264,7 +273,7 @@ return function() {
 
     if ($path === '/input-form' || $path === '/mobile-mode') {
         $employees = PresenceLog::distinctEmployees();
-        $selectedDate = $_GET['date'] ?? date('Y-m-d');
+        $selectedDate = normalize_log_date($_GET['date'] ?? null);
         $statuses = ['Izin Keluar', 'Sakit', 'Cuti Tahunan', 'WFH', 'Dinas Luar'];
         ob_start();
         include dirname(__DIR__) . '/resources/views/mobile-mode.php';
@@ -292,7 +301,7 @@ return function() {
     }
 
     if ($path === '/admin/dashboard') {
-        $selectedDate = $_GET['date'] ?? date('Y-m-d');
+        $selectedDate = normalize_log_date($_GET['date'] ?? null);
         $analytics = AdminDashboardController::buildAnalyticsData($selectedDate);
         ob_start();
         include dirname(__DIR__) . '/resources/views/admin-dashboard.php';
