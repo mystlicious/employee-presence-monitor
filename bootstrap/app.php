@@ -24,6 +24,17 @@ function parse_env_value(string $value): string
 	return $value;
 }
 
+/** Read env (Railway raw editor may include surrounding quotes). */
+function env_value(string $key, string $default = ''): string
+{
+	$raw = getenv($key);
+	if ($raw === false || $raw === '') {
+		return $default;
+	}
+
+	return parse_env_value($raw);
+}
+
 $envFile = __DIR__ . '/../.env';
 if (file_exists($envFile)) {
 	$lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -40,7 +51,7 @@ if (file_exists($envFile)) {
 
 // Keep all server-side timestamps consistent for submitted/log times.
 // Default to GMT+8; can still be overridden via APP_TIMEZONE in .env.
-$timezone = getenv('APP_TIMEZONE') ?: 'Asia/Singapore';
+$timezone = env_value('APP_TIMEZONE', 'Asia/Singapore');
 date_default_timezone_set($timezone);
 
 /**
@@ -53,8 +64,8 @@ function pdo_mysql_driver_options(): array
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 	];
 
-	$sslCa = getenv('MYSQL_ATTR_SSL_CA');
-	if ($sslCa !== false && $sslCa !== '') {
+	$sslCa = env_value('MYSQL_ATTR_SSL_CA');
+	if ($sslCa !== '') {
 		if (! is_readable($sslCa)) {
 			throw new RuntimeException("MYSQL_ATTR_SSL_CA is set but not readable: {$sslCa}");
 		}
@@ -64,19 +75,19 @@ function pdo_mysql_driver_options(): array
 	return $options;
 }
 
-$driver = getenv('DB_CONNECTION') ?: 'mysql';
+$driver = env_value('DB_CONNECTION', 'mysql');
 
 try {
 	if ($driver !== 'mysql') {
 		throw new RuntimeException('Only MySQL is supported. Set DB_CONNECTION=mysql in .env');
 	}
 
-	$host = getenv('DB_HOST') ?: '127.0.0.1';
-	$port = getenv('DB_PORT') ?: '3306';
-	$db = getenv('DB_DATABASE') ?: '';
-	$user = getenv('DB_USERNAME') ?: '';
-	$pass = getenv('DB_PASSWORD') ?: '';
-	$charset = getenv('DB_CHARSET') ?: 'utf8mb4';
+	$host = env_value('DB_HOST', '127.0.0.1');
+	$port = env_value('DB_PORT', '3306');
+	$db = env_value('DB_DATABASE');
+	$user = env_value('DB_USERNAME');
+	$pass = env_value('DB_PASSWORD');
+	$charset = env_value('DB_CHARSET', 'utf8mb4');
 	$dsn = "mysql:host={$host};port={$port};dbname={$db};charset={$charset}";
 	$pdoOptions = pdo_mysql_driver_options();
 	try {

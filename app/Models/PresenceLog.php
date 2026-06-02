@@ -46,7 +46,7 @@ class PresenceLog
     public static function logsByDate(string $date)
     {
         $pdo = self::pdo();
-        $stmt = $pdo->prepare('SELECT * FROM presence_logs WHERE log_date = :d ORDER BY COALESCE(start_time, log_time, "00:00:00") DESC, created_at DESC, id DESC');
+        $stmt = $pdo->prepare("SELECT * FROM presence_logs WHERE log_date = :d ORDER BY COALESCE(start_time, log_time, '00:00:00') DESC, created_at DESC, id DESC");
         $stmt->execute(['d' => $date]);
         return $stmt->fetchAll();
     }
@@ -57,7 +57,7 @@ class PresenceLog
     public static function logsByDateAndStatus(string $date, string $status)
     {
         $pdo = self::pdo();
-        $stmt = $pdo->prepare('SELECT * FROM presence_logs WHERE log_date = :d AND status = :s ORDER BY COALESCE(start_time, log_time, "00:00:00") DESC, created_at DESC, id DESC');
+        $stmt = $pdo->prepare("SELECT * FROM presence_logs WHERE log_date = :d AND status = :s ORDER BY COALESCE(start_time, log_time, '00:00:00') DESC, created_at DESC, id DESC");
         $stmt->execute(['d' => $date, 's' => $status]);
         return $stmt->fetchAll();
     }
