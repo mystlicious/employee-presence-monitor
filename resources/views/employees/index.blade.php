@@ -155,7 +155,7 @@ include $viewsRoot . '/partials/admin-chrome-open.php';
                   <thead>
                     <tr>
                       <th><?php echo htmlspecialchars(__('employee')); ?></th>
-                      <th><?php echo htmlspecialchars(__('status')); ?></th>
+                      <th class="pm-col-status"><?php echo htmlspecialchars(__('status')); ?></th>
                       <th><?php echo htmlspecialchars(__('days_out')); ?></th>
                       <th><?php echo htmlspecialchars(__('last_absence')); ?></th>
                       <th class="pm-col-actions tw-whitespace-nowrap"><?php echo htmlspecialchars(__('actions')); ?></th>
@@ -327,7 +327,7 @@ include $viewsRoot . '/partials/admin-chrome-open.php';
         + '<p class="tw-m-0 tw-mt-0.5 tw-truncate tw-text-xs tw-text-slate-500">' + escapeHtml(subtitle) + '</p>'
         + '<div class="tw-mt-1.5 md:tw-hidden"><span class="tw-inline-flex tw-items-center tw-rounded-full tw-px-2 tw-py-0.5 tw-text-[0.65rem] tw-font-semibold tw-ring-1 tw-ring-inset ' + badgeClass + '">' + escapeHtml(badgeLabel) + '</span></div>'
         + '</div></div></td>'
-        + '<td><span class="pm-status-dot ' + (isActivePulse ? 'pm-status-dot--in' : 'pm-status-dot--out') + '"><span class="tw-inline-flex tw-items-center tw-rounded-full tw-px-2.5 tw-py-1 tw-text-[0.7rem] tw-font-semibold tw-ring-1 tw-ring-inset ' + badgeClass + '">' + escapeHtml(badgeLabel) + '</span></span></td>'
+        + '<td class="pm-col-status"><span class="pm-status-dot ' + (isActivePulse ? 'pm-status-dot--in' : 'pm-status-dot--out') + '"><span class="pm-status-badge tw-inline-flex tw-items-center tw-justify-center tw-rounded-full tw-px-2.5 tw-py-1 tw-text-center tw-text-[0.7rem] tw-font-semibold tw-leading-snug tw-ring-1 tw-ring-inset ' + badgeClass + '">' + escapeHtml(badgeLabel) + '</span></span></td>'
         + '<td class="tw-text-sm tw-tabular-nums tw-text-slate-700">' + absenceDays + '</td>'
         + '<td class="tw-text-sm tw-text-slate-600">' + escapeHtml(lastAbsence) + '</td>'
         + '<td class="pm-col-actions tw-whitespace-nowrap" onclick="event.stopPropagation();"><div class="tw-inline-flex tw-flex-nowrap tw-items-center tw-justify-end tw-gap-2">'

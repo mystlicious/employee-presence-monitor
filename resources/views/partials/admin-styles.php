@@ -496,6 +496,20 @@
       scrollbar-gutter:stable;
     }
     @media (max-width:1023px){
+      .pm-table-wrap--employee-directory .pm-table thead th.pm-col-status,
+      .pm-table-wrap--employee-directory .pm-table tbody td.pm-col-status{
+        text-align:center;
+      }
+      .pm-table-wrap--employee-directory .pm-status-dot{
+        justify-content:center;
+        width:100%;
+      }
+      .pm-table-wrap--employee-directory .pm-status-badge{
+        max-width:100%;
+        text-align:center;
+        white-space:normal;
+        word-break:break-word;
+      }
       .pm-table-wrap--employee-directory .pm-table-x-sync{
         overflow-x:auto;
         -webkit-overflow-scrolling:touch;

@@ -262,9 +262,9 @@ SQL;
         }
         $pdo = self::pdo();
         $stmt = $pdo->prepare(
-            "SELECT COUNT(DISTINCT log_date) AS c FROM presence_logs
-             WHERE employee_name = :n AND log_date IS NOT NULL AND log_date <> ''
-               AND log_date BETWEEN :s AND :e"
+            'SELECT COUNT(DISTINCT log_date) AS c FROM presence_logs
+             WHERE employee_name = :n AND log_date IS NOT NULL
+               AND log_date BETWEEN :s AND :e'
         );
         $stmt->execute(['n' => $name, 's' => $startDate, 'e' => $endDate]);
         $row = $stmt->fetch();

@@ -178,24 +178,25 @@
       border: 1px solid rgba(148, 163, 184, 0.3);
       background: rgba(15, 23, 42, 0.5);
       color: var(--sig-ink);
-      padding: 0 0.65rem;
+      padding: 0 0.65rem 0 2.35rem;
       font: inherit;
       font-size: 0.8125rem;
       color-scheme: dark;
-      padding-right: 2.35rem;
     }
     .sig-date-input::-webkit-calendar-picker-indicator {
       opacity: 0;
       cursor: pointer;
       position: absolute;
-      right: 0;
+      left: 0;
+      right: auto;
       width: 2.35rem;
       height: 100%;
     }
     .sig-date-wrap { position: relative; display: inline-flex; align-items: center; }
     .sig-date-pick {
       position: absolute;
-      right: 0.55rem;
+      left: 0.55rem;
+      right: auto;
       top: 50%;
       transform: translateY(-50%);
       width: 1.15rem;
@@ -215,12 +216,17 @@
       height: var(--ctrl-h);
       border-radius: 0.625rem;
       border: 1px solid rgba(148, 163, 184, 0.3);
-      background: rgba(15, 23, 42, 0.5);
+      background-color: rgba(15, 23, 42, 0.5);
       color: var(--sig-ink);
       font: inherit;
       font-size: 0.8125rem;
-      padding: 0 0.65rem;
+      padding: 0 2rem 0 0.65rem;
       min-width: 8rem;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.55rem center;
+      background-size: 1rem;
     }
     .sig-board {
       flex: 1 1 auto;
@@ -671,8 +677,8 @@
         width: 100%;
         min-width: 0;
         font-size: 0.875rem;
-        padding-left: 0.5rem;
-        padding-right: 2.5rem;
+        padding-left: 2.35rem;
+        padding-right: 0.65rem;
       }
       .sig-filter select {
         width: 100%;
