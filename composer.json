@@ -2,7 +2,7 @@
   "name": "presence-monitor/presence-monitor",
   "description": "Minimal Laravel-like template",
   "require": {
-    "php": ">=8.0",
+    "php": "^8.4",
     "nesbot/carbon": "^3.11",
     "phpoffice/phpspreadsheet": "^2.4"
   },
